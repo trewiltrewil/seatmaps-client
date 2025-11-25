@@ -22,6 +22,9 @@ export interface Props {
   isMobile?: boolean;
   showLegendOpenAlwaysForDesktop?: boolean;
   openLegendInitially?: boolean;
+  legendBackgroundColor?: string;
+  legendTextColor?: string;
+  borderColor?: string;
 }
 
 interface State {
@@ -33,6 +36,9 @@ export default class Legend extends Component<Props, State> {
     isMobile: false,
     showLegendOpenAlwaysForDesktop: false,
     openLegendInitially: false,
+    legendBackgroundColor: "white",
+    legendTextColor: "black",
+    borderColor: "lightgray",
   };
 
   state = {
@@ -41,20 +47,34 @@ export default class Legend extends Component<Props, State> {
 
   render() {
     const { isOpen } = this.state;
-    const { ranges, isMobile, showLegendOpenAlwaysForDesktop } = this.props;
+    const {
+      ranges,
+      isMobile,
+      showLegendOpenAlwaysForDesktop,
+      legendBackgroundColor,
+      legendTextColor,
+      borderColor,
+    } = this.props;
 
     return showLegendOpenAlwaysForDesktop && !isMobile ? (
       <div style={{ position: "relative" }}>
         <div
           style={{
             position: "absolute",
-            backgroundColor: "white",
+            backgroundColor: legendBackgroundColor,
             right: -2,
-            border: "2px solid lightgray",
+            border: `2px solid ${borderColor}`,
             borderRadius: "0 0 5px 5px",
+            color: legendTextColor,
           }}
         >
-          <h3 style={{ padding: "0 0 0 8px", textAlign: "left" }}>
+          <h3
+            style={{
+              padding: "0 0 0 8px",
+              textAlign: "left",
+              color: legendTextColor,
+            }}
+          >
             Map Legend
           </h3>
           {ranges.map((range) => (
@@ -76,15 +96,17 @@ export default class Legend extends Component<Props, State> {
           icon={isOpen ? <IconChevronUp /> : <IconChevronDown />}
           text={`${isOpen ? "Hide " : "Show "}Map Legend`}
           isMobile={isMobile}
+          style={{ color: legendTextColor }}
         />
         {ranges.length > 0 && isOpen && (
           <div
             style={{
               position: "absolute",
-              backgroundColor: "white",
+              backgroundColor: legendBackgroundColor,
               right: -2,
-              border: "2px solid lightgray",
+              border: `2px solid ${borderColor}`,
               borderRadius: "0 0 5px 5px",
+              color: legendTextColor,
             }}
           >
             {ranges.map((range) => (

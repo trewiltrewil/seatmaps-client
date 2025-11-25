@@ -45,6 +45,12 @@ class MapNotFoundError extends Error {
 
 export const highlightedSectionColor = "#4a4a4a";
 export const unhighlightedSectionColor = "#FFFFFF";
+const defaultMapBackgroundColor = "#FFFFFF";
+const defaultSectionLabelColor = "#000000";
+const defaultLegendBackgroundColor = "#FFFFFF";
+const defaultLegendTextColor = "#000000";
+const defaultControlIconColor = "#000000";
+const defaultControlBorderColor = "lightgray";
 
 // Needed to support SSR in some cases - in case user wants to prerender/cache map html serverside.
 const { fetch: isomorphicFetch } = fetchPonyfill();
@@ -57,6 +63,13 @@ export class TicketMap extends Component<Props & DefaultProps, State> {
   static defaultProps: DefaultProps = {
     mapsDomain: "https://maps.ticketevolution.com",
     onSelection: () => {},
+    mapBackgroundColor: defaultMapBackgroundColor,
+    sectionStrokeColor: unhighlightedSectionColor,
+    sectionLabelColor: defaultSectionLabelColor,
+    legendBackgroundColor: defaultLegendBackgroundColor,
+    legendTextColor: defaultLegendTextColor,
+    controlIconColor: defaultControlIconColor,
+    controlBorderColor: defaultControlBorderColor,
     selectedSections: [],
     sectionPercentiles: {
       "0.2": "#FFC515",
@@ -265,6 +278,7 @@ export class TicketMap extends Component<Props & DefaultProps, State> {
 
     mapSvg.querySelectorAll<HTMLElement>("text").forEach((text) => {
       text.style.pointerEvents = "none";
+      text.style.fill = this.props.sectionLabelColor;
     });
 
     this.setState({ mapSvg });
@@ -318,7 +332,7 @@ export class TicketMap extends Component<Props & DefaultProps, State> {
       fill: element.getAttribute("data-unavailable-color") as string,
       opacity: "1",
       "stroke-width": "1",
-      stroke: unhighlightedSectionColor,
+      stroke: this.props.sectionStrokeColor,
     }));
 
   fillPathsForSection = (
@@ -414,7 +428,7 @@ export class TicketMap extends Component<Props & DefaultProps, State> {
           "stroke-width": "1",
           stroke: shouldHighlight
             ? highlightedSectionColor
-            : unhighlightedSectionColor,
+            : this.props.sectionStrokeColor,
           cursor: "pointer",
         }),
         section,
@@ -636,6 +650,7 @@ export class TicketMap extends Component<Props & DefaultProps, State> {
           fontFamily: this.props.mapFontFamily,
           height: "100%",
           width: "100%",
+          backgroundColor: this.props.mapBackgroundColor,
           pointerEvents: this.props.mouseControlEnabled ? "initial" : "none",
         }}
       >
@@ -665,6 +680,7 @@ export class TicketMap extends Component<Props & DefaultProps, State> {
           style={{
             cursor: "-webkit-grab",
             opacity: this.state.mapSvg ? 1 : 0,
+            backgroundColor: this.props.mapBackgroundColor,
           }}
         />
         {this.state.mapSvg && (
@@ -680,6 +696,11 @@ export class TicketMap extends Component<Props & DefaultProps, State> {
             onZoomIn={this.handleZoomIn}
             onZoomOut={this.handleZoomOut}
             onResetZoom={this.handleResetZoom}
+            mapBackgroundColor={this.props.mapBackgroundColor}
+            controlIconColor={this.props.controlIconColor}
+            controlBorderColor={this.props.controlBorderColor}
+            legendBackgroundColor={this.props.legendBackgroundColor}
+            legendTextColor={this.props.legendTextColor}
           />
         )}
         {this.state.isTouchDevice &&

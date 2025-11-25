@@ -17,6 +17,13 @@ const requiredConfigKeys: (keyof RequiredProps)[] = [
 
 const optionalConfigKeys: (keyof DefaultProps)[] = [
   "mapFontFamily",
+  "mapBackgroundColor",
+  "sectionStrokeColor",
+  "sectionLabelColor",
+  "legendBackgroundColor",
+  "legendTextColor",
+  "controlIconColor",
+  "controlBorderColor",
   "selectedSections",
   "onSelection",
   "ticketGroups",

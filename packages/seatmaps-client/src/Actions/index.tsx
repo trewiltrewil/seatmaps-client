@@ -16,6 +16,11 @@ export interface Props {
   onZoomIn: () => void;
   onZoomOut: () => void;
   onResetZoom: () => void;
+  controlIconColor: string;
+  controlBorderColor: string;
+  mapBackgroundColor: string;
+  legendBackgroundColor: string;
+  legendTextColor: string;
 }
 
 interface DefaultProps {
@@ -24,6 +29,11 @@ interface DefaultProps {
   openLegendInitially: boolean;
   showControls: boolean;
   onClearSelection(): void;
+  controlIconColor: string;
+  controlBorderColor: string;
+  mapBackgroundColor: string;
+  legendBackgroundColor: string;
+  legendTextColor: string;
 }
 
 interface State {
@@ -49,6 +59,11 @@ export default class Actions extends React.Component<
     showControls: true,
     openLegendInitially: false,
     onClearSelection: () => {},
+    controlIconColor: "#000000",
+    controlBorderColor: "lightgray",
+    mapBackgroundColor: "#FFFFFF",
+    legendBackgroundColor: "#FFFFFF",
+    legendTextColor: "#000000",
   };
 
   get styles(): { [key: string]: React.CSSProperties } {
@@ -107,6 +122,7 @@ export default class Actions extends React.Component<
   render() {
     const { isMobile } = this.state;
     const { showControls, showLegend } = this.props;
+    const controlBorderStyle = `2px solid ${this.props.controlBorderColor}`;
 
     const showLeftActions = showControls || (isMobile && showLegend);
     const showRightActions = !isMobile && showLegend;
@@ -118,7 +134,10 @@ export default class Actions extends React.Component<
         data-testid="seatmaps-actions-menu"
       >
         {showLeftActions && (
-          <ActionGroup>
+          <ActionGroup
+            borderColor={this.props.controlBorderColor}
+            backgroundColor={this.props.mapBackgroundColor}
+          >
             {!isMobile && showControls && (
               <React.Fragment>
                 <Button
@@ -127,7 +146,10 @@ export default class Actions extends React.Component<
                   onClick={this.props.onZoomIn}
                   icon={<IconPlus />}
                   isMobile={isMobile}
-                  style={{ borderRight: "2px solid lightgray" }}
+                  style={{
+                    borderRight: controlBorderStyle,
+                    color: this.props.controlIconColor,
+                  }}
                   name="zoom-in"
                   data-testid="zoom-in"
                 />
@@ -136,7 +158,10 @@ export default class Actions extends React.Component<
                   onClick={this.props.onZoomOut}
                   icon={<IconMinus />}
                   isMobile={isMobile}
-                  style={{ borderRight: "2px solid lightgray" }}
+                  style={{
+                    borderRight: controlBorderStyle,
+                    color: this.props.controlIconColor,
+                  }}
                   name="zoom-out"
                   data-testid="zoom-out"
                 />
@@ -146,7 +171,10 @@ export default class Actions extends React.Component<
                   icon={<IconUndo />}
                   text="Reset Zoom"
                   isMobile={isMobile}
-                  style={{ borderRight: "2px solid lightgray" }}
+                  style={{
+                    borderRight: controlBorderStyle,
+                    color: this.props.controlIconColor,
+                  }}
                   name="reset-zoom"
                   data-testid="reset-zoom"
                 />
@@ -160,24 +188,37 @@ export default class Actions extends React.Component<
                 text={`Clear${isMobile ? "" : " All"}`}
                 isMobile={isMobile}
                 style={{
-                  borderRight: isMobile ? "2px solid lightgray" : undefined,
+                  borderRight: isMobile ? controlBorderStyle : undefined,
+                  color: this.props.controlIconColor,
                 }}
                 name="clear-selection"
               />
             )}
             {isMobile && showLegend && (
-              <Legend isMobile ranges={this.props.ranges} />
+              <Legend
+                isMobile
+                ranges={this.props.ranges}
+                legendBackgroundColor={this.props.legendBackgroundColor}
+                legendTextColor={this.props.legendTextColor}
+                borderColor={this.props.controlBorderColor}
+              />
             )}
           </ActionGroup>
         )}
         {showRightActions && (
-          <ActionGroup>
+          <ActionGroup
+            borderColor={this.props.controlBorderColor}
+            backgroundColor={this.props.mapBackgroundColor}
+          >
             <Legend
               ranges={this.props.ranges}
               showLegendOpenAlwaysForDesktop={
                 this.props.showLegendOpenAlwaysForDesktop
               }
               openLegendInitially={this.props.openLegendInitially}
+              legendBackgroundColor={this.props.legendBackgroundColor}
+              legendTextColor={this.props.legendTextColor}
+              borderColor={this.props.controlBorderColor}
             />
           </ActionGroup>
         )}

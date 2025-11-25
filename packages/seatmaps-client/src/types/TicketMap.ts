@@ -31,6 +31,13 @@ export interface Manifest {
 export interface DefaultProps {
   showLegend: boolean;
   mapFontFamily: string;
+  mapBackgroundColor: string;
+  sectionStrokeColor: string;
+  sectionLabelColor: string;
+  legendBackgroundColor: string;
+  legendTextColor: string;
+  controlIconColor: string;
+  controlBorderColor: string;
   selectedSections: string[];
   ticketGroups: TicketGroup[];
   sectionPercentiles: Percentiles;

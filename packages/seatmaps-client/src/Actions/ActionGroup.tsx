@@ -1,16 +1,26 @@
 import React from "react";
 
-export default function (props: React.HTMLProps<HTMLDivElement>) {
+interface Props extends React.HTMLProps<HTMLDivElement> {
+  borderColor?: string;
+  backgroundColor?: string;
+}
+
+export default function ActionGroup({
+  borderColor = "lightgray",
+  backgroundColor = "white",
+  style,
+  ...props
+}: Props) {
   return (
     <div
       {...props}
       style={{
         pointerEvents: "all",
-        border: "2px solid lightgray",
+        border: `2px solid ${borderColor}`,
         borderRadius: 5,
         display: "flex",
-        backgroundColor: "white",
-        ...(props.style || {}),
+        backgroundColor,
+        ...(style || {}),
       }}
     />
   );
