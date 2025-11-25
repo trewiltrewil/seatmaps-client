@@ -9,36 +9,264 @@
       rel="stylesheet"
     />
     <title>Seatmap Example</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: "Open Sans", sans-serif;
+        background: #f7f7f7;
+        color: #222;
+      }
+
+      .page {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 16px;
+      }
+
+      .controls {
+        background: #fff;
+        border: 1px solid #dcdcdc;
+        border-radius: 8px;
+        padding: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      }
+
+      .controls h2 {
+        margin: 0 0 8px;
+        font-size: 16px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 8px 12px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      label {
+        font-size: 13px;
+        color: #444;
+      }
+
+      input[type="color"],
+      input[type="text"] {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 6px 8px;
+        border-radius: 6px;
+        border: 1px solid #dcdcdc;
+        font-size: 13px;
+      }
+
+      .actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      button {
+        padding: 8px 12px;
+        border-radius: 6px;
+        border: 1px solid #dcdcdc;
+        background: #0f5bff;
+        color: #fff;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      button.secondary {
+        background: #fff;
+        color: #0f5bff;
+      }
+
+      #map {
+        height: 70vh;
+        background: white;
+        border: 1px solid #dcdcdc;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+    </style>
   </head>
   <body>
-    <!-- Ensure this element has the correct id -->
-    <div id="map"></div>
+    <div class="page">
+      <div class="controls">
+        <h2>Theme Controls</h2>
+        <p style="margin: 0 0 12px; font-size: 13px; color: #555;">
+          Adjust the colors below and click <strong>Rebuild Seatmap</strong> to apply them. Use this to test dark or light themes.
+        </p>
+        <div class="grid">
+          <div class="field">
+            <label for="mapBackgroundColor">Map background color</label>
+            <input type="color" id="mapBackgroundColor" value="#ffffff" />
+          </div>
+          <div class="field">
+            <label for="sectionStrokeColor">Section stroke color</label>
+            <input type="color" id="sectionStrokeColor" value="#ffffff" />
+          </div>
+          <div class="field">
+            <label for="sectionHighlightStrokeColor">Section highlight stroke color</label>
+            <input type="color" id="sectionHighlightStrokeColor" value="#4a4a4a" />
+          </div>
+          <div class="field">
+            <label for="sectionLabelColor">Section label color</label>
+            <input type="color" id="sectionLabelColor" value="#000000" />
+          </div>
+          <div class="field">
+            <label for="legendBackgroundColor">Legend background color</label>
+            <input type="color" id="legendBackgroundColor" value="#ffffff" />
+          </div>
+          <div class="field">
+            <label for="legendBorderColor">Legend border color</label>
+            <input type="color" id="legendBorderColor" value="#d3d3d3" />
+          </div>
+          <div class="field">
+            <label for="legendTextColor">Legend text color</label>
+            <input type="color" id="legendTextColor" value="#000000" />
+          </div>
+          <div class="field">
+            <label for="controlIconColor">Control icon color</label>
+            <input type="color" id="controlIconColor" value="#000000" />
+          </div>
+          <div class="field">
+            <label for="controlBorderColor">Control border color</label>
+            <input type="color" id="controlBorderColor" value="#d3d3d3" />
+          </div>
+          <div class="field">
+            <label for="controlBackgroundColor">Control background color</label>
+            <input type="color" id="controlBackgroundColor" value="#ffffff" />
+          </div>
+        </div>
+        <div class="actions">
+          <button id="rebuild">Rebuild Seatmap</button>
+          <button class="secondary" id="preset-dark">Dark preset</button>
+          <button class="secondary" id="preset-light">Light preset</button>
+        </div>
+      </div>
+
+      <!-- Ensure this element has the correct id -->
+      <div id="map"></div>
+    </div>
 
     <script src="node_modules/@ticketevolution/seatmaps-client/dist/bundle.js"></script>
     <!-- UMD build bundle -->
     <script>
-      window.onload = function () {
+      const rootElementId = "map";
+      const controls = [
+        "mapBackgroundColor",
+        "sectionStrokeColor",
+        "sectionHighlightStrokeColor",
+        "sectionLabelColor",
+        "legendBackgroundColor",
+        "legendBorderColor",
+        "legendTextColor",
+        "controlIconColor",
+        "controlBorderColor",
+        "controlBackgroundColor",
+      ];
+
+      const presets = {
+        light: {
+          mapBackgroundColor: "#ffffff",
+          sectionStrokeColor: "#ffffff",
+          sectionHighlightStrokeColor: "#4a4a4a",
+          sectionLabelColor: "#000000",
+          legendBackgroundColor: "#ffffff",
+          legendBorderColor: "#d3d3d3",
+          legendTextColor: "#000000",
+          controlIconColor: "#000000",
+          controlBorderColor: "#d3d3d3",
+          controlBackgroundColor: "#ffffff",
+        },
+        dark: {
+          mapBackgroundColor: "#0b0b0b",
+          sectionStrokeColor: "#3d3d3d",
+          sectionHighlightStrokeColor: "#9e9e9e",
+          sectionLabelColor: "#f5f5f5",
+          legendBackgroundColor: "#1b1b1b",
+          legendBorderColor: "#3a3a3a",
+          legendTextColor: "#ededed",
+          controlIconColor: "#ededed",
+          controlBorderColor: "#3a3a3a",
+          controlBackgroundColor: "#1b1b1b",
+        },
+      };
+
+      function setPreset(name) {
+        const preset = presets[name];
+        controls.forEach((id) => {
+          const input = document.getElementById(id);
+          if (input && preset[id]) {
+            input.value = preset[id];
+          }
+        });
+      }
+
+      function readThemeOptions() {
+        return controls.reduce((acc, id) => {
+          const input = document.getElementById(id);
+          if (input) {
+            acc[id] = input.value;
+          }
+          return acc;
+        }, {});
+      }
+
+      let seatmapApi;
+
+      function renderSeatmap(ticketGroups) {
+        const options = {
+          venueId: "896",
+          configurationId: "14341",
+          mapFontFamily: '"Open Sans", sans-serif',
+          ticketGroups,
+          ...readThemeOptions(),
+        };
+
+        const mapElement = document.getElementById(rootElementId);
+        if (!mapElement) {
+          console.error(`Element with id '${rootElementId}' not found.`);
+          return;
+        }
+
+        mapElement.style.backgroundColor = options.mapBackgroundColor;
+        mapElement.innerHTML = "";
+
+        const factory = new Tevomaps.SeatmapFactory(options);
+        factory.build(rootElementId).then((api) => {
+          seatmapApi = api;
+        });
+      }
+
+      function fetchAndRender() {
         fetch("./node_modules/@-/mock-data/data/ticket-groups-1591449.json")
           .then((response) => response.json())
-          .then((data) => {
-            const options = {
-              venueId: "896",
-              configurationId: "14341",
-              mapFontFamily: '"Open Sans", sans-serif',
-              ticketGroups: data,
-            };
+          .then((data) => renderSeatmap(data))
+          .catch((error) => console.error("Failed to load ticket groups", error));
+      }
 
-            // Create a new instance of SeatmapFactory
-            const factory = new Tevomaps.SeatmapFactory(options);
+      window.onload = function () {
+        fetchAndRender();
 
-            // Ensure the element exists before calling the build method
-            const rootElementId = "map";
-            if (document.getElementById(rootElementId)) {
-              factory.build(rootElementId);
-            } else {
-              console.error(`Element with id '${rootElementId}' not found.`);
-            }
-          });
+        document.getElementById("rebuild")?.addEventListener("click", () => {
+          fetchAndRender();
+        });
+
+        document.getElementById("preset-dark")?.addEventListener("click", () => {
+          setPreset("dark");
+          fetchAndRender();
+        });
+
+        document.getElementById("preset-light")?.addEventListener("click", () => {
+          setPreset("light");
+          fetchAndRender();
+        });
       };
     </script>
   </body>
