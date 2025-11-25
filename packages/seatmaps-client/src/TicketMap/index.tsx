@@ -58,6 +58,7 @@ export class TicketMap extends Component<Props & DefaultProps, State> {
     mapsDomain: "https://maps.ticketevolution.com",
     onSelection: () => {},
     selectedSections: [],
+    mapBackgroundColor: "#FFFFFF",
     sectionPercentiles: {
       "0.2": "#FFC515",
       "0.4": "#f2711c",
@@ -65,6 +66,9 @@ export class TicketMap extends Component<Props & DefaultProps, State> {
       "0.8": "#a333c8",
       "1": "#2A6EBB",
     },
+    sectionStrokeColor: unhighlightedSectionColor,
+    sectionHighlightStrokeColor: highlightedSectionColor,
+    sectionLabelColor: "#000000",
     ticketGroups: [],
     showLegend: true,
     showLegendOpenAlwaysForDesktop: false,
@@ -73,6 +77,12 @@ export class TicketMap extends Component<Props & DefaultProps, State> {
     mouseControlEnabled: true,
     showZoomHelper: true,
     mapFontFamily: "inherit",
+    legendBackgroundColor: "white",
+    legendTextColor: "black",
+    legendBorderColor: "lightgray",
+    controlIconColor: "black",
+    controlBorderColor: "lightgray",
+    controlBackgroundColor: "white",
   };
 
   constructor(props: Props & DefaultProps) {
@@ -196,7 +206,12 @@ export class TicketMap extends Component<Props & DefaultProps, State> {
     // we set in future methods.
     if (this.mapRoot.current) {
       this.mapRoot.current.innerHTML = mapHtml;
+      this.mapRoot.current.style.backgroundColor =
+        this.props.mapBackgroundColor;
       const svg = this.mapRoot.current.querySelector("svg");
+      if (svg) {
+        svg.style.backgroundColor = this.props.mapBackgroundColor;
+      }
       if (svg && this.props.mouseControlEnabled) {
         this.zoom = initializeZoom(svg);
       }
@@ -265,6 +280,8 @@ export class TicketMap extends Component<Props & DefaultProps, State> {
 
     mapSvg.querySelectorAll<HTMLElement>("text").forEach((text) => {
       text.style.pointerEvents = "none";
+      text.setAttribute("fill", this.props.sectionLabelColor);
+      text.style.fill = this.props.sectionLabelColor;
     });
 
     this.setState({ mapSvg });
@@ -318,7 +335,7 @@ export class TicketMap extends Component<Props & DefaultProps, State> {
       fill: element.getAttribute("data-unavailable-color") as string,
       opacity: "1",
       "stroke-width": "1",
-      stroke: unhighlightedSectionColor,
+      stroke: this.props.sectionStrokeColor,
     }));
 
   fillPathsForSection = (
@@ -413,8 +430,8 @@ export class TicketMap extends Component<Props & DefaultProps, State> {
           opacity: shouldHighlight ? "1" : "0.6",
           "stroke-width": "1",
           stroke: shouldHighlight
-            ? highlightedSectionColor
-            : unhighlightedSectionColor,
+            ? this.props.sectionHighlightStrokeColor
+            : this.props.sectionStrokeColor,
           cursor: "pointer",
         }),
         section,
@@ -637,6 +654,7 @@ export class TicketMap extends Component<Props & DefaultProps, State> {
           height: "100%",
           width: "100%",
           pointerEvents: this.props.mouseControlEnabled ? "initial" : "none",
+          backgroundColor: this.props.mapBackgroundColor,
         }}
       >
         {!this.state.isTouchDevice && (
@@ -680,6 +698,12 @@ export class TicketMap extends Component<Props & DefaultProps, State> {
             onZoomIn={this.handleZoomIn}
             onZoomOut={this.handleZoomOut}
             onResetZoom={this.handleResetZoom}
+            legendBackgroundColor={this.props.legendBackgroundColor}
+            legendTextColor={this.props.legendTextColor}
+            legendBorderColor={this.props.legendBorderColor}
+            controlIconColor={this.props.controlIconColor}
+            controlBorderColor={this.props.controlBorderColor}
+            controlBackgroundColor={this.props.controlBackgroundColor}
           />
         )}
         {this.state.isTouchDevice &&

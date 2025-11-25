@@ -167,6 +167,45 @@ describe("TicketMap", () => {
     );
   });
 
+  it("applies configurable stroke and label colors", async () => {
+    const customStroke = "#222222";
+    const customHighlightStroke = "#dddddd";
+    const customLabelColor = "#ff00ff";
+
+    await waitFor(() => {
+      render(
+        <TicketMap
+          {...dataProps}
+          ticketGroups={[ticketGroup]}
+          sectionStrokeColor={customStroke}
+          sectionHighlightStrokeColor={customHighlightStroke}
+          sectionLabelColor={customLabelColor}
+        />,
+      );
+    });
+
+    expect(await screen.findByTestId(`seatmaps-section`)).toHaveAttribute(
+      "stroke",
+      customStroke,
+    );
+
+    const svg = await screen.findByTestId(mapSVGTestId);
+    const label = svg.querySelector("text");
+
+    expect(label).not.toBeNull();
+    expect(label).toHaveAttribute("fill", customLabelColor);
+
+    await waitFor(async () => {
+      const target = await screen.findByTestId("seatmaps-section");
+      fireEvent.mouseOver(target, { clientX: 10, clientY: 10, target });
+    });
+
+    expect(await screen.findByTestId(`seatmaps-section`)).toHaveAttribute(
+      "stroke",
+      customHighlightStroke,
+    );
+  });
+
   describe("when hovering over a section", () => {
     beforeEach(async () => {
       await waitFor(() => {

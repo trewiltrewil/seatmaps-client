@@ -16,6 +16,12 @@ export interface Props {
   onZoomIn: () => void;
   onZoomOut: () => void;
   onResetZoom: () => void;
+  legendBackgroundColor: string;
+  legendTextColor: string;
+  legendBorderColor: string;
+  controlIconColor: string;
+  controlBorderColor: string;
+  controlBackgroundColor: string;
 }
 
 interface DefaultProps {
@@ -118,7 +124,11 @@ export default class Actions extends React.Component<
         data-testid="seatmaps-actions-menu"
       >
         {showLeftActions && (
-          <ActionGroup>
+          <ActionGroup
+            borderColor={this.props.controlBorderColor}
+            backgroundColor={this.props.controlBackgroundColor}
+            textColor={this.props.controlIconColor}
+          >
             {!isMobile && showControls && (
               <React.Fragment>
                 <Button
@@ -127,7 +137,11 @@ export default class Actions extends React.Component<
                   onClick={this.props.onZoomIn}
                   icon={<IconPlus />}
                   isMobile={isMobile}
-                  style={{ borderRight: "2px solid lightgray" }}
+                  style={{
+                    borderRight: `2px solid ${this.props.controlBorderColor}`,
+                    color: this.props.controlIconColor,
+                    backgroundColor: this.props.controlBackgroundColor,
+                  }}
                   name="zoom-in"
                   data-testid="zoom-in"
                 />
@@ -136,7 +150,11 @@ export default class Actions extends React.Component<
                   onClick={this.props.onZoomOut}
                   icon={<IconMinus />}
                   isMobile={isMobile}
-                  style={{ borderRight: "2px solid lightgray" }}
+                  style={{
+                    borderRight: `2px solid ${this.props.controlBorderColor}`,
+                    color: this.props.controlIconColor,
+                    backgroundColor: this.props.controlBackgroundColor,
+                  }}
                   name="zoom-out"
                   data-testid="zoom-out"
                 />
@@ -146,7 +164,11 @@ export default class Actions extends React.Component<
                   icon={<IconUndo />}
                   text="Reset Zoom"
                   isMobile={isMobile}
-                  style={{ borderRight: "2px solid lightgray" }}
+                  style={{
+                    borderRight: `2px solid ${this.props.controlBorderColor}`,
+                    color: this.props.controlIconColor,
+                    backgroundColor: this.props.controlBackgroundColor,
+                  }}
                   name="reset-zoom"
                   data-testid="reset-zoom"
                 />
@@ -160,24 +182,41 @@ export default class Actions extends React.Component<
                 text={`Clear${isMobile ? "" : " All"}`}
                 isMobile={isMobile}
                 style={{
-                  borderRight: isMobile ? "2px solid lightgray" : undefined,
+                  borderRight: isMobile
+                    ? `2px solid ${this.props.controlBorderColor}`
+                    : undefined,
+                  color: this.props.controlIconColor,
+                  backgroundColor: this.props.controlBackgroundColor,
                 }}
                 name="clear-selection"
               />
             )}
             {isMobile && showLegend && (
-              <Legend isMobile ranges={this.props.ranges} />
+              <Legend
+                isMobile
+                ranges={this.props.ranges}
+                legendBackgroundColor={this.props.legendBackgroundColor}
+                legendTextColor={this.props.legendTextColor}
+                legendBorderColor={this.props.legendBorderColor}
+              />
             )}
           </ActionGroup>
         )}
         {showRightActions && (
-          <ActionGroup>
+          <ActionGroup
+            borderColor={this.props.controlBorderColor}
+            backgroundColor={this.props.controlBackgroundColor}
+            textColor={this.props.controlIconColor}
+          >
             <Legend
               ranges={this.props.ranges}
               showLegendOpenAlwaysForDesktop={
                 this.props.showLegendOpenAlwaysForDesktop
               }
               openLegendInitially={this.props.openLegendInitially}
+              legendBackgroundColor={this.props.legendBackgroundColor}
+              legendTextColor={this.props.legendTextColor}
+              legendBorderColor={this.props.legendBorderColor}
             />
           </ActionGroup>
         )}

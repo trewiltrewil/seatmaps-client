@@ -31,9 +31,13 @@ export interface Manifest {
 export interface DefaultProps {
   showLegend: boolean;
   mapFontFamily: string;
+  mapBackgroundColor: string;
   selectedSections: string[];
   ticketGroups: TicketGroup[];
   sectionPercentiles: Percentiles;
+  sectionStrokeColor: string;
+  sectionHighlightStrokeColor: string;
+  sectionLabelColor: string;
   mapsDomain: string;
   onSelection(sections: string[]): void;
   showControls: boolean;
@@ -41,6 +45,12 @@ export interface DefaultProps {
   openLegendInitially: boolean;
   mouseControlEnabled: boolean;
   showZoomHelper: boolean;
+  legendBackgroundColor: string;
+  legendTextColor: string;
+  legendBorderColor: string;
+  controlIconColor: string;
+  controlBorderColor: string;
+  controlBackgroundColor: string;
   missingSeatMapLogo?: React.ReactNode;
 }
 
