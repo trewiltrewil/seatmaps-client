@@ -17,10 +17,14 @@ const requiredConfigKeys: (keyof RequiredProps)[] = [
 
 const optionalConfigKeys: (keyof DefaultProps)[] = [
   "mapFontFamily",
+  "mapBackgroundColor",
   "selectedSections",
   "onSelection",
   "ticketGroups",
   "sectionPercentiles",
+  "sectionStrokeColor",
+  "sectionHighlightStrokeColor",
+  "sectionLabelColor",
   "mapsDomain",
   "showControls",
   "showLegendOpenAlwaysForDesktop",
@@ -28,6 +32,12 @@ const optionalConfigKeys: (keyof DefaultProps)[] = [
   "openLegendInitially",
   "mouseControlEnabled",
   "showZoomHelper",
+  "legendBackgroundColor",
+  "legendTextColor",
+  "legendBorderColor",
+  "controlIconColor",
+  "controlBorderColor",
+  "controlBackgroundColor",
 ];
 
 export function extractConfigurationFromOptions(options: Props): Props {

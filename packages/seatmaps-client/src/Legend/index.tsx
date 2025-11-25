@@ -22,6 +22,9 @@ export interface Props {
   isMobile?: boolean;
   showLegendOpenAlwaysForDesktop?: boolean;
   openLegendInitially?: boolean;
+  legendBackgroundColor?: string;
+  legendTextColor?: string;
+  legendBorderColor?: string;
 }
 
 interface State {
@@ -33,6 +36,9 @@ export default class Legend extends Component<Props, State> {
     isMobile: false,
     showLegendOpenAlwaysForDesktop: false,
     openLegendInitially: false,
+    legendBackgroundColor: "white",
+    legendTextColor: "black",
+    legendBorderColor: "lightgray",
   };
 
   state = {
@@ -48,10 +54,11 @@ export default class Legend extends Component<Props, State> {
         <div
           style={{
             position: "absolute",
-            backgroundColor: "white",
+            backgroundColor: this.props.legendBackgroundColor,
             right: -2,
-            border: "2px solid lightgray",
+            border: `2px solid ${this.props.legendBorderColor}`,
             borderRadius: "0 0 5px 5px",
+            color: this.props.legendTextColor,
           }}
         >
           <h3 style={{ padding: "0 0 0 8px", textAlign: "left" }}>
@@ -76,15 +83,20 @@ export default class Legend extends Component<Props, State> {
           icon={isOpen ? <IconChevronUp /> : <IconChevronDown />}
           text={`${isOpen ? "Hide " : "Show "}Map Legend`}
           isMobile={isMobile}
+          style={{
+            color: this.props.legendTextColor,
+            backgroundColor: this.props.legendBackgroundColor,
+          }}
         />
         {ranges.length > 0 && isOpen && (
           <div
             style={{
               position: "absolute",
-              backgroundColor: "white",
+              backgroundColor: this.props.legendBackgroundColor,
               right: -2,
-              border: "2px solid lightgray",
+              border: `2px solid ${this.props.legendBorderColor}`,
               borderRadius: "0 0 5px 5px",
+              color: this.props.legendTextColor,
             }}
           >
             {ranges.map((range) => (
